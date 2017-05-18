@@ -3,6 +3,7 @@ Nsof OAuth2 plugin for HTTPie.
 
 """
 import requests
+import urlparse
 import httpie
 
 
@@ -12,23 +13,28 @@ __licence__ = 'Apache 2.0'
 
 
 class NsofAuth(object):
-    NSOF_API_URL = "https://api.nsof.io"
-
     def __init__(self, org, username, password):
         self.org = org
         self.username = username
         self.password = password
 
     def __call__(self, r):
-        tokens = self._get_tokens()
+        host_url = self._get_host_url(r)
+        tokens = self._get_tokens(host_url)
         r.headers['Authorization'] = 'Bearer %s' % tokens['access_token']
         return r
 
-    def _get_tokens(self):
+    def _get_host_url(self, r):
+        parsed_url = urlparse.urlparse(r.url)
+        if parsed_url.scheme:
+            return "%s://%s" % (parsed_url.scheme, parsed_url.netloc)
+        return parsed_url.netloc
+
+    def _get_tokens(self, host_url):
         request_data = {"grant_type": "password",
                         "username": self.username,
                         "password": self.password}
-        url = "%s/v1/%s/oauth/token" % (self.NSOF_API_URL, self.org)
+        url = "%s/v1/%s/oauth/token" % (host_url, self.org)
         response = requests.post(url=url, json=request_data)
         response.raise_for_status()
         return response.json()
