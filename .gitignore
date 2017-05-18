@@ -1,4 +1,6 @@
 build/
+dist/
+httpie_nsof.egg-info/
 *.swp
 *.swo
 *.pyc
