@@ -49,3 +49,10 @@ You can also set your org, username, password as default:
 
     $ echo '{"default_options": ["--auth-type=nsof", "--auth=nsof/username:password"]}' > ~/.httpie/config.json
     $ http https://api.nsof.io/v1/users
+
+
+It's possible to pass a different effective org using the env ``EORG``:
+
+.. code-block:: bash
+
+    $ EORG=nsof http https://api.nsof.io/v1/users

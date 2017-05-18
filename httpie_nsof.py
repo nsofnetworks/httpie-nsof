@@ -5,6 +5,7 @@ Nsof OAuth2 plugin for HTTPie.
 import requests
 import urlparse
 import httpie
+import os
 
 
 __version__ = '0.1'
@@ -34,6 +35,9 @@ class NsofAuth(object):
         request_data = {"grant_type": "password",
                         "username": self.username,
                         "password": self.password}
+        eorg = os.environ.get('EORG')
+        if eorg:
+            request_data['scope'] = "org:%s" % eorg
         url = "%s/v1/%s/oauth/token" % (host_url, self.org)
         response = requests.post(url=url, json=request_data)
         response.raise_for_status()
