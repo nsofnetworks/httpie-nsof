@@ -1,15 +1,19 @@
 from setuptools import setup
 
+VERSION = '0.1'
+GITHUB_URL = 'https://github.com/nsofnetworks/httpie-nsof'
+ARCHIVE_URL = GITHUB_URL + "/archive/%s.tar.gz"
 
 setup(
     name='httpie-nsof',
     description='Nsof OAuth 2 plugin for HTTPie.',
     long_description=open('README.rst').read().strip(),
-    version='0.1',
+    version=VERSION,
     author='Alon Horowitz',
     author_email='alon@nsof.io',
     license='Apache License 2.0',
-    url='https://github.com/nsofnetworks/httpie-nsof',
+    url=GITHUB_URL,
+    download_url=ARCHIVE_URL % VERSION,
     py_modules=['httpie_nsof'],
     zip_safe=False,
     entry_points={
