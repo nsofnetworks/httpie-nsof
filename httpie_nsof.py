@@ -8,7 +8,7 @@ import httpie
 import os
 
 
-__version__ = '0.2'
+__version__ = '0.3'
 __author__ = 'Alon Horowitz'
 __licence__ = 'Apache 2.0'
 
