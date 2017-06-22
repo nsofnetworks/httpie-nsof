@@ -22,7 +22,8 @@ class NsofAuth(object):
     def __call__(self, r):
         host_url = self._get_host_url(r)
         tokens = self._get_tokens(host_url)
-        r.headers['Authorization'] = 'Bearer %s' % tokens['access_token']
+        if tokens:
+            r.headers['Authorization'] = 'Bearer %s' % tokens['access_token']
         return r
 
     def _get_host_url(self, r):
@@ -40,6 +41,8 @@ class NsofAuth(object):
             request_data['scope'] = "org:%s" % eorg
         url = "%s/v1/%s/oauth/token" % (host_url, self.org)
         response = requests.post(url=url, json=request_data)
+        if response.status_code == 404:
+            return None
         response.raise_for_status()
         return response.json()
 
