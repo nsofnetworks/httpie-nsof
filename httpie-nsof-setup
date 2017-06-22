@@ -6,13 +6,13 @@ import os
 prompt = '>> '
 print "Welcome to Nsof's HTTPie setup"
 
-print "What is your org shortname?"
+print "Please enter your organization's shortname"
 org = raw_input(prompt)
 
-print "What is your username (email address)?"
+print "Please enter your Nsof login username (email address):"
 username = raw_input(prompt)
 
-print "What is you password?"
+print "Please enter your Nsof login password:"
 password = getpass.getpass(prompt)
 
 default_options = ["--auth=%s/%s:%s" % (org, username, password)]
