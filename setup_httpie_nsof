@@ -1,0 +1,29 @@
+#!/usr/bin/python
+import json
+import os
+
+prompt = '> '
+print "Welcome to Nsof's HTTPie setup"
+
+print "What is your org shortname?"
+org = raw_input(prompt)
+
+print "What is your username (email address)?"
+username = raw_input(prompt)
+
+print "What is you password?"
+password = raw_input(prompt)
+
+default_options = ["--auth-type=nsof",
+                   "--auth=%s/%s:%s" % (org, username, password)]
+conf = {"default_options": default_options}
+conf_dir = os.path.join(os.path.expanduser("~"), ".httpie")
+conf_path = os.path.join(conf_dir, "config.json")
+
+if not os.path.exists(conf_dir):
+    os.makedirs(conf_dir)
+with open(conf_path, 'w') as f:
+    json.dump(conf, f, indent=4)
+    f.write('\n')
+
+print "Updated %s successfully" % conf_path

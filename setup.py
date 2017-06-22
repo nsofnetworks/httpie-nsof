@@ -15,6 +15,7 @@ setup(
     url=GITHUB_URL,
     download_url=ARCHIVE_URL % VERSION,
     py_modules=['httpie_nsof'],
+    scripts=['setup_httpie_nsof'],
     zip_safe=False,
     entry_points={
         'httpie.plugins.auth.v1': [
