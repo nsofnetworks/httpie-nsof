@@ -21,7 +21,7 @@ Setup
 
 .. code-block:: bash
 
-    $ setup_httpie_nsof
+    $ httpie-nsof-setup
     
     
 Your HTTPie should be configured to use Nsof's auth plugin with your creds (see ~/.httpie/config.json).
