@@ -32,11 +32,11 @@ Usage
 
 .. code-block:: bash
 
-    $ http GET https://api.nsof.io/v1/users
+    $ http --auth-type=nsof GET https://api.nsof.io/v1/users
     
 
 It's possible to pass a different effective org using the env ``EORG``:
 
 .. code-block:: bash
 
-    $ EORG=nsof http GET https://api.nsof.io/v1/users
+    $ EORG=nsof http --auth-type=nsof GET https://api.nsof.io/v1/users

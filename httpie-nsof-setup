@@ -15,8 +15,7 @@ username = raw_input(prompt)
 print "What is you password?"
 password = getpass.getpass(prompt)
 
-default_options = ["--auth-type=nsof",
-                   "--auth=%s/%s:%s" % (org, username, password)]
+default_options = ["--auth=%s/%s:%s" % (org, username, password)]
 conf = {"default_options": default_options}
 conf_dir = os.path.join(os.path.expanduser("~"), ".httpie")
 conf_path = os.path.join(conf_dir, "config.json")
