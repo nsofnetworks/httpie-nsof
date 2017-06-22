@@ -1,8 +1,9 @@
 #!/usr/bin/python
+import getpass
 import json
 import os
 
-prompt = '> '
+prompt = '>> '
 print "Welcome to Nsof's HTTPie setup"
 
 print "What is your org shortname?"
@@ -12,7 +13,7 @@ print "What is your username (email address)?"
 username = raw_input(prompt)
 
 print "What is you password?"
-password = raw_input(prompt)
+password = getpass.getpass(prompt)
 
 default_options = ["--auth-type=nsof",
                    "--auth=%s/%s:%s" % (org, username, password)]
