@@ -10,7 +10,7 @@ Installation
 
 .. code-block:: bash
 
-    $ python setup.py install
+    $ pip install httpie-nsof
 
 
 You should now see ``nsof`` under ``--auth-type`` in ``$ http --help`` output.
