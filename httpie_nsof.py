@@ -22,6 +22,7 @@ class NsofAuth(object):
         self.org = org
         self.username = username
         self.password = password
+        self.eorg = os.getenv('EORG', org)
 
     def __call__(self, r):
         host_url = self._get_host_url(r)
@@ -32,7 +33,10 @@ class NsofAuth(object):
                 tokens = self._authenticate(host_url)
             if tokens:
                 access_token = tokens['access_token']
-                self._store_token('access_token', host_url, access_token)
+                self._store_token('access_token',
+                                  host_url,
+                                  access_token,
+                                  store_eorg=True)
                 if 'refresh_token' in tokens:
                     self._store_token('refresh_token',
                                       host_url,
@@ -66,9 +70,8 @@ class NsofAuth(object):
         return response.status_code == 200
 
     def _request_token(self, host_url, request_data):
-        eorg = os.environ.get('EORG')
-        if eorg:
-            request_data['scope'] = "org:%s" % eorg
+        if self.eorg != self.org:
+            request_data['scope'] = "org:%s" % self.eorg
         url = self._get_auth_url(host_url)
         response = requests.post(url=url, json=request_data)
         response.raise_for_status()
@@ -92,14 +95,18 @@ class NsofAuth(object):
             return None
         if token_info['host_url'] != host_url:
             return None
+        if token_info.get('eorg', self.eorg) != self.eorg:
+            return None
         payload = jwt.decode(token_info['token'], verify=False)
         if time.time() > (payload['exp'] + 30):
             return None
         return token_info['token']
 
-    def _store_token(self, name, host_url, token):
+    def _store_token(self, name, host_url, token, store_eorg=False):
         path = self._get_token_path(name)
         token_info = {'token': token, 'host_url': host_url}
+        if store_eorg:
+            token_info['eorg'] = self.eorg
         with open(path, 'w') as f:
             json.dump(token_info, f)
 
