@@ -1,7 +1,16 @@
 #!/usr/bin/python
 import getpass
 import json
+import sys
 import os
+
+
+is_windows = 'win32' in str(sys.platform).lower()
+conf_dir = str(os.getenv(
+    'HTTPIE_CONFIG_DIR',
+    os.path.expanduser('~/.httpie' if not is_windows else r'%APPDATA%\\httpie')
+))
+conf_path = os.path.join(conf_dir, "config.json")
 
 prompt = '>> '
 print "Welcome to Nsof's HTTPie setup"
@@ -17,9 +26,6 @@ password = getpass.getpass(prompt)
 
 default_options = ["--auth=%s/%s:%s" % (org, username, password)]
 conf = {"default_options": default_options}
-conf_dir = os.path.join(os.path.expanduser("~"), ".httpie")
-conf_path = os.path.join(conf_dir, "config.json")
-
 if not os.path.exists(conf_dir):
     os.makedirs(conf_dir)
 with open(conf_path, 'w') as f:
