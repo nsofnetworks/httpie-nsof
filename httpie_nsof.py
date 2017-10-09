@@ -46,23 +46,18 @@ class NsofAuth(object):
         return r
 
     def _refresh_authentication(self, host_url):
-        try:
-            refresh_token = self._load_token_if_valid('refresh_token',
-                                                      host_url)
-            request_data = {"grant_type": "refresh_token",
-                            "refresh_token": refresh_token}
-            return self._request_token(host_url, request_data)
-        except:
+        refresh_token = self._load_token_if_valid('refresh_token', host_url)
+        if not refresh_token:
             return None
+        request_data = {"grant_type": "refresh_token",
+                        "refresh_token": refresh_token}
+        return self._request_token(host_url, request_data)
 
     def _authenticate(self, host_url):
-        tokens = None
-        if self._is_auth_endpoint_exists(host_url):
-            request_data = {"grant_type": "password",
-                            "username": self.username,
-                            "password": self.password}
-            tokens = self._request_token(host_url, request_data)
-        return tokens
+        request_data = {"grant_type": "password",
+                        "username": self.username,
+                        "password": self.password}
+        return self._request_token(host_url, request_data)
 
     def _is_auth_endpoint_exists(self, host_url):
         url = self._get_auth_url(host_url)
@@ -70,6 +65,8 @@ class NsofAuth(object):
         return response.status_code == 200
 
     def _request_token(self, host_url, request_data):
+        if not self._is_auth_endpoint_exists(host_url):
+            return None
         if self.eorg != self.org:
             request_data['scope'] = "org:%s" % self.eorg
         url = self._get_auth_url(host_url)
