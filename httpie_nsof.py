@@ -23,6 +23,7 @@ class NsofAuth(object):
         self.username = username
         self.password = password
         self.eorg = os.getenv('EORG', org)
+        self.verbose = bool(os.getenv('VERBOSE', False))
 
     def __call__(self, r):
         host_url = self._get_host_url(r)
@@ -70,6 +71,7 @@ class NsofAuth(object):
         if self.eorg != self.org:
             request_data['scope'] = "org:%s" % self.eorg
         url = self._get_auth_url(host_url)
+        self._vprint("auth: [%s] %s body=%s" % (self.eorg, url, request_data))
         response = requests.post(url=url, json=request_data)
         response.raise_for_status()
         return response.json()
@@ -110,6 +112,10 @@ class NsofAuth(object):
     def _get_token_path(self, name):
         tmpdir = tempfile.gettempdir()
         return os.path.join(tmpdir, "httpie-nsof.%s" % name)
+
+    def _vprint(self, msg):
+        if self.verbose:
+            print msg
 
 
 class NsofAuthPlugin(httpie.plugins.AuthPlugin):
