@@ -78,9 +78,10 @@ class NsofAuth(object):
 
     def _get_host_url(self, r):
         parsed_url = urlparse.urlparse(r.url)
+        netloc_no_port = parsed_url.netloc.split(':')[0]
         if parsed_url.scheme:
-            return "%s://%s" % (parsed_url.scheme, parsed_url.netloc)
-        return parsed_url.netloc
+            return "%s://%s" % (parsed_url.scheme, netloc_no_port)
+        return netloc_no_port
 
     def _get_auth_url(self, host_url):
         return "%s/v1/%s/oauth/token" % (host_url, self.org)
