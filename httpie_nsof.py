@@ -12,7 +12,7 @@ import httpie
 import jwt
 
 
-__version__ = '0.7'
+__version__ = '0.8'
 __author__ = 'Alon Horowitz'
 __licence__ = 'Apache 2.0'
 
