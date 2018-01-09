@@ -98,7 +98,7 @@ class NsofAuth(object):
         if token_info.get('eorg', self.eorg) != self.eorg:
             return None
         payload = jwt.decode(token_info['token'], verify=False)
-        if time.time() > (payload['exp'] + 30):
+        if time.time() > (payload['exp'] - 30):
             return None
         return token_info['token']
 
