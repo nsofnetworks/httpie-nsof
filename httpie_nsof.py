@@ -71,7 +71,8 @@ class NsofAuth(object):
         if self.eorg != self.org:
             request_data['scope'] = "org:%s" % self.eorg
         url = self._get_auth_url(host_url)
-        self._vprint("auth: [%s] %s body=%s" % (self.eorg, url, request_data))
+        msg = "httpie-nsof: [%s] %s body=%s" % (self.eorg, url, request_data)
+        self._vprint(msg)
         response = requests.post(url=url, json=request_data)
         response.raise_for_status()
         return response.json()
