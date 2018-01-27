@@ -10,6 +10,7 @@ import os
 import requests
 import httpie
 import jwt
+import sys
 
 
 __version__ = '0.8'
@@ -124,7 +125,24 @@ class NsofAuthPlugin(httpie.plugins.AuthPlugin):
     name = 'Nsof OAuth 2'
     auth_type = 'nsof'
     description = ''
+    auth_require = False
 
-    def get_auth(self, username, password):
-        org, username = username.split("/")
+    def get_auth(self, username=None, password=None):
+        if username is None:
+            org = os.getenv("HTTPIE_NSOF_ORG")
+            username = os.getenv("HTTPIE_NSOF_USERNAME")
+        else:
+            if '/' not in username:
+                print >> sys.stderr, "httpie-nsof error: wrong username format"
+                sys.exit(httpie.ExitStatus.PLUGIN_ERROR)
+            org, username = username.split("/")
+        password = password or os.getenv("HTTPIE_NSOF_PASSWORD")
+        self._verify_input(org=org, username=username, password=password)
         return NsofAuth(org, username, password)
+
+    def _verify_input(self, **input_params):
+        missing = [k for k, v in input_params.iteritems() if not v]
+        if missing:
+            msg = "httpie-nsof error: missing %s" % ', '.join(missing)
+            print >> sys.stderr, msg
+            sys.exit(httpie.ExitStatus.PLUGIN_ERROR)
