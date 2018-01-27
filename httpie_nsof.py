@@ -13,7 +13,7 @@ import jwt
 import sys
 
 
-__version__ = '0.8'
+__version__ = '0.9'
 __author__ = 'Alon Horowitz'
 __licence__ = 'Apache 2.0'
 
