@@ -98,7 +98,9 @@ class NsofAuth(object):
         self._vprint(msg)
         response = requests.request(method, url, params=params, json=json)
         response.raise_for_status()
-        return response.json()
+        ret = response.json()
+        self._vprint("httpie-nsof: [%s] response=%s" % (self.eorg, ret))
+        return ret
 
     def _get_host_url(self, r):
         parsed_url = urlparse.urlparse(r.url)
