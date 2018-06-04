@@ -101,7 +101,8 @@ class NsofAuth(object):
     def _do_call(self, ep, method, params=None, json=None):
         url = self.host_url + ep
         if not self._is_auth_endpoint_exists(url):
-            return None
+            print "target endpoint failed to respond (URL: %s)." % url
+            exit(1)
         msg = "httpie-nsof: [%s] url=%s" % (self.eorg, url)
         if params:
             msg += ", params=%s" % params
