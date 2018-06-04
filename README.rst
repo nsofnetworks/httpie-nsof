@@ -24,7 +24,13 @@ Setup
     $ httpie-nsof-setup
     
     
-Your HTTPie should be configured to use Nsof's auth plugin with your creds (see ~/.httpie/config.json).
+Configure Nsof's auth plugin with your creds (saved in ~/.httpie/config.json).
+The credentials can be either a username/password or API Key ID/API Key Secret
+
+Notes:
+    - if username is not provided in conf file it will be searched at HTTPIE_NSOF_USERNAME
+    - if password is not provided in conf file it will be searched at HTTPIE_NSOF_PASSWORD
+    - manually inputted username/password supersede conf file and environment variables
 
 
 Usage

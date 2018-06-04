@@ -18,10 +18,14 @@ print "Welcome to Nsof's HTTPie setup"
 print "Please enter your organization's shortname"
 org = raw_input(prompt)
 
-print "Please enter your Nsof login username (email address):"
+print "Please enter your Nsof login username (email address) or API key ID:"
 username = raw_input(prompt)
+if '@' not in username and 'key-' not in username:
+    print "httpie-nsof error: invalid username format or " \
+          "invalid API key ID format"
+    exit(1)
 
-print "Please enter your Nsof login password:"
+print "Please enter your Nsof login password or API key secret:"
 password = getpass.getpass(prompt)
 
 default_options = ["--auth=%s/%s:%s" % (org, username, password)]

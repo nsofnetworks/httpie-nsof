@@ -62,9 +62,21 @@ class NsofAuth(object):
         return self._do_call(EP_GET_TOKEN, 'post', json=json)
 
     def _authenticate(self):
+        if self.username.startswith("key-") and '@' not in self.username:
+            return self._authenticate_api_key()
+        else:
+            return self._authenticate_user()
+
+    def _authenticate_api_key(self):
+        json = {"grant_type": "client_credentials",
+                "client_id": self.username,
+                "client_secret": self.password}
+        return self._do_call(EP_GET_TOKEN, 'post', json=json)
+
+    def _authenticate_user(self):
         json = {"username": self.username,
                 "password": self.password,
-                "org_shortname": self.org}
+                "client_secret": self.org}
         response = self._do_call(EP_LOGIN, 'post', json=json)
         if response['status'] != 'authorized':
             raise Exception('Could not log in. Returned status: %s',
@@ -153,8 +165,10 @@ class NsofAuthPlugin(httpie.plugins.AuthPlugin):
             org = os.getenv("HTTPIE_NSOF_ORG")
             username = os.getenv("HTTPIE_NSOF_USERNAME")
         else:
-            if '/' not in username:
-                print >> sys.stderr, "httpie-nsof error: wrong username format"
+            if '/' not in username or \
+                    ('@' not in username and '/key-' not in username):
+                print >> sys.stderr, "httpie-nsof error: invalid username " \
+                  "format or invalid API key ID format"
                 sys.exit(httpie.ExitStatus.PLUGIN_ERROR)
             org, username = username.split("/")
         password = password or os.getenv("HTTPIE_NSOF_PASSWORD")
