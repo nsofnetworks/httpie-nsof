@@ -1,6 +1,6 @@
 from setuptools import setup
 
-VERSION = '0.95'
+VERSION = '1.00'
 GITHUB_URL = 'https://github.com/nsofnetworks/httpie-nsof'
 ARCHIVE_URL = GITHUB_URL + "/archive/%s.tar.gz"
 
