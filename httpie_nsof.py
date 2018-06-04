@@ -76,7 +76,7 @@ class NsofAuth(object):
     def _authenticate_user(self):
         json = {"username": self.username,
                 "password": self.password,
-                "client_secret": self.org}
+                "org_shortname": self.org}
         response = self._do_call(EP_LOGIN, 'post', json=json)
         if response['status'] != 'authorized':
             raise Exception('Could not log in. Returned status: %s',
