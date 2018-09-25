@@ -2,7 +2,8 @@
 Nsof OAuth2 plugin for HTTPie.
 
 """
-import urlparse
+from __future__ import print_function
+from __future__ import absolute_import
 import tempfile
 import json
 import time
@@ -12,6 +13,10 @@ import httpie
 import jwt
 import sys
 
+try:
+    import urlparse
+except ImportError:
+    import urllib.parse as urlparse
 
 __version__ = '1.00'
 __author__ = 'Alon Horowitz'
@@ -101,7 +106,7 @@ class NsofAuth(object):
     def _do_call(self, ep, method, params=None, json=None):
         url = self.host_url + ep
         if not self._is_auth_endpoint_exists(url):
-            print "target endpoint failed to respond (URL: %s)." % url
+            print("target endpoint failed to respond (URL: %s)." % url)
             exit(1)
         msg = "httpie-nsof: [%s] url=%s" % (self.eorg, url)
         if params:
@@ -152,7 +157,7 @@ class NsofAuth(object):
 
     def _vprint(self, msg):
         if self.verbose:
-            print msg
+            print(msg)
 
 
 class NsofAuthPlugin(httpie.plugins.AuthPlugin):
@@ -168,8 +173,8 @@ class NsofAuthPlugin(httpie.plugins.AuthPlugin):
         else:
             if '/' not in username or \
                     ('@' not in username and '/key-' not in username):
-                print >> sys.stderr, "httpie-nsof error: invalid username " \
-                  "format or invalid API key ID format"
+                print("httpie-nsof error: invalid username format or invalid "
+                      "API key ID format", file=sys.stderr)
                 sys.exit(httpie.ExitStatus.PLUGIN_ERROR)
             org, username = username.split("/")
         password = password or os.getenv("HTTPIE_NSOF_PASSWORD")
@@ -177,8 +182,8 @@ class NsofAuthPlugin(httpie.plugins.AuthPlugin):
         return NsofAuth(org, username, password)
 
     def _verify_input(self, **input_params):
-        missing = [k for k, v in input_params.iteritems() if not v]
+        missing = [k for k, v in input_params.items() if not v]
         if missing:
-            msg = "httpie-nsof error: missing %s" % ', '.join(missing)
-            print >> sys.stderr, msg
+            print("httpie-nsof error: missing %s" % ', '.join(missing),
+                  file=sys.stderr)
             sys.exit(httpie.ExitStatus.PLUGIN_ERROR)
