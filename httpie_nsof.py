@@ -76,6 +76,8 @@ class NsofAuth(object):
         json = {"grant_type": "client_credentials",
                 "client_id": self.username,
                 "client_secret": self.password}
+        if self.eorg != self.org:
+            json['scope'] = 'org:%s' % self.eorg
         return self._do_call(EP_GET_TOKEN, 'post', json=json)
 
     def _authenticate_user(self):
