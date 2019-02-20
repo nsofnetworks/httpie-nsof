@@ -155,7 +155,7 @@ class NsofAuth(object):
 
     def _get_token_path(self, name):
         tmpdir = tempfile.gettempdir()
-        return os.path.join(tmpdir, "httpie-nsof.%s" % name)
+        return os.path.join(tmpdir, "httpie-nsof.%s.%s" % (self.org, name))
 
     def _vprint(self, msg):
         if self.verbose:
