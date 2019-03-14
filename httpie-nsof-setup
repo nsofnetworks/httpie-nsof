@@ -13,19 +13,20 @@ conf_dir = str(os.getenv(
 conf_path = os.path.join(conf_dir, "config.json")
 
 prompt = '>> '
-print "Welcome to Nsof's HTTPie setup"
+user_input = input if sys.version_info > (3, 0) else raw_input
+print("Welcome to Nsof's HTTPie setup")
 
-print "Please enter your organization's shortname"
-org = raw_input(prompt)
+print("Please enter your organization's shortname")
+org = user_input(prompt)
 
-print "Please enter your Nsof login username (email address) or API key ID:"
-username = raw_input(prompt)
+print("Please enter your Nsof login username (email address) or API key ID:")
+username = user_input(prompt)
 if '@' not in username and 'key-' not in username:
-    print "httpie-nsof error: invalid username format or " \
-          "invalid API key ID format"
+    print("httpie-nsof error: invalid username format or "
+          "invalid API key ID format")
     exit(1)
 
-print "Please enter your Nsof login password or API key secret:"
+print("Please enter your Nsof login password or API key secret:")
 password = getpass.getpass(prompt)
 
 default_options = ["--auth=%s/%s:%s" % (org, username, password)]
@@ -36,4 +37,4 @@ with open(conf_path, 'w') as f:
     json.dump(conf, f, indent=4)
     f.write('\n')
 
-print "Updated %s successfully" % conf_path
+print("Updated %s successfully" % conf_path)
