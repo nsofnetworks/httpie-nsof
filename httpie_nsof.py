@@ -67,6 +67,8 @@ class NsofAuth(object):
         return self._do_call(EP_GET_TOKEN, 'post', json=json)
 
     def _authenticate(self):
+        if not self._is_auth_endpoint_exists():
+            return None
         if self.username.startswith("key-") and '@' not in self.username:
             return self._authenticate_api_key()
         else:
@@ -101,15 +103,13 @@ class NsofAuth(object):
             json['scope'] = 'org:%s' % self.eorg
         return self._do_call(EP_GET_TOKEN, 'post', json=json)
 
-    def _is_auth_endpoint_exists(self, url):
+    def _is_auth_endpoint_exists(self):
+        url = self.host_url + EP_GET_TOKEN
         response = requests.options(url=url)
         return response.status_code == 200
 
     def _do_call(self, ep, method, params=None, json=None):
         url = self.host_url + ep
-        if not self._is_auth_endpoint_exists(url):
-            print("target endpoint failed to respond (URL: %s)." % url)
-            exit(1)
         msg = "httpie-nsof: [%s] url=%s" % (self.eorg, url)
         if params:
             msg += ", params=%s" % params
