@@ -18,7 +18,7 @@ try:
 except ImportError:
     import urllib.parse as urlparse
 
-__version__ = '1.4'
+__version__ = '1.5'
 __author__ = 'Alon Horowitz'
 __licence__ = 'Apache 2.0'
 
