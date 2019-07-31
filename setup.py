@@ -24,7 +24,6 @@ setup(
     },
     install_requires=[
         'httpie>=0.7.0',
-        'pyjwt>=1.4.2'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',

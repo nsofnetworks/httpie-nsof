@@ -2,7 +2,6 @@ language: python
 
 install:
   - pip install httpie
-  - pip install pyjwt
   - pip install pep8
   - pip install pylint
 

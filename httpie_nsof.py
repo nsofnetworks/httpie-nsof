@@ -10,7 +10,6 @@ import time
 import os
 import requests
 import httpie
-import jwt
 import sys
 
 try:
@@ -48,10 +47,12 @@ class NsofAuth(object):
                 access_token = tokens['access_token']
                 self._store_token('access_token',
                                   access_token,
+                                  tokens['expires_in'],
                                   store_eorg=True)
                 if 'refresh_token' in tokens:
                     self._store_token('refresh_token',
-                                      tokens['refresh_token'])
+                                      tokens['refresh_token'],
+                                      tokens['refresh_expires_in'])
         if access_token:
             r.headers['Authorization'] = 'Bearer %s' % access_token
         return r
@@ -140,14 +141,15 @@ class NsofAuth(object):
             return None
         if token_info.get('eorg', self.eorg) != self.eorg:
             return None
-        payload = jwt.decode(token_info['token'], verify=False)
-        if time.time() > (payload['exp'] - 30):
+        now = time.time()
+        if now > (token_info.get('exp', now) - 30):
             return None
         return token_info['token']
 
-    def _store_token(self, name, token, store_eorg=False):
+    def _store_token(self, name, token, expires_in, store_eorg=False):
         path = self._get_token_path(name)
-        token_info = {'token': token, 'host_url': self.host_url}
+        exp = time.time() + expires_in - 30
+        token_info = {'token': token, 'host_url': self.host_url, 'exp': exp}
         if store_eorg:
             token_info['eorg'] = self.eorg
         with open(path, 'w') as f:
