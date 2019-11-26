@@ -1,3 +1,4 @@
+.vscode/
 build/
 dist/
 httpie_nsof.egg-info/
