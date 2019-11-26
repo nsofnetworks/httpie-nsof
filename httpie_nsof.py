@@ -70,14 +70,16 @@ class NsofAuth(object):
     def _authenticate(self):
         if not self._is_auth_endpoint_exists():
             return None
+        if self.username.startswith("ne-") and '@' not in self.username:
+            return self._authenticate_api_key_or_device(client_id='device')
         if self.username.startswith("key-") and '@' not in self.username:
-            return self._authenticate_api_key()
+            return self._authenticate_api_key_or_device(client_id=self.username)
         else:
             return self._authenticate_user()
 
-    def _authenticate_api_key(self):
+    def _authenticate_api_key_or_device(self, client_id):
         json = {"grant_type": "client_credentials",
-                "client_id": self.username,
+                "client_id": client_id,
                 "client_secret": self.password}
         if self.eorg != self.org:
             json['scope'] = 'org:%s' % self.eorg
@@ -176,7 +178,9 @@ class NsofAuthPlugin(httpie.plugins.AuthPlugin):
             username = os.getenv("HTTPIE_NSOF_USERNAME")
         else:
             if '/' not in username or \
-                    ('@' not in username and '/key-' not in username):
+                    ('@' not in username and
+                     '/key-' not in username and
+                     '/ne-' not in username):
                 print("httpie-nsof error: invalid username format or invalid "
                       "API key ID format", file=sys.stderr)
                 sys.exit(httpie.ExitStatus.PLUGIN_ERROR)
