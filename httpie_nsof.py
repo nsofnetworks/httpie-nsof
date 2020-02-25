@@ -35,6 +35,7 @@ class NsofAuth(object):
         self.eorg = os.getenv('EORG', org)
         self.verbose = bool(os.getenv('VERBOSE', False))
         self.host_url = None
+        self.neid = os.getenv('NEID')
 
     def __call__(self, r):
         self.host_url = self._get_host_url(r)
@@ -92,13 +93,16 @@ class NsofAuth(object):
             raise Exception('Could not log in. Returned status: %s',
                             response['status'])
 
+        client_id = 'overlay' if self.neid else 'api'
         params = {'response_type': 'code',
-                  'client_id': 'api',
+                  'client_id': client_id,
                   'session_token': response['session_token']}
+        if self.neid:
+            params['network_element_id'] = self.neid
         response = self._do_call(EP_GET_AUTHCODE, 'get', params=params)
 
         json = {'grant_type': 'authorization_code',
-                'client_id': 'api',
+                'client_id': client_id,
                 'code': response['code']}
         if self.eorg != self.org:
             json['scope'] = 'org:%s' % self.eorg
