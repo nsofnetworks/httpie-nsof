@@ -65,7 +65,12 @@ class NsofAuth(object):
                 "refresh_token": refresh_token}
         if self.eorg != self.org:
             body['scope'] = 'org:%s' % self.eorg
-        return self._do_call(EP_GET_TOKEN, 'post', body=body)
+        try:
+            return self._do_call(EP_GET_TOKEN, 'post', body=body)
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and e.response.status_code == 401:
+                return None
+            raise e
 
     def _authenticate(self):
         if not self._is_auth_endpoint_exists():
