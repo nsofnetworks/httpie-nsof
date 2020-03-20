@@ -61,11 +61,11 @@ class NsofAuth(object):
         refresh_token = self._load_token_if_valid('refresh_token')
         if not refresh_token:
             return None
-        json = {"grant_type": "refresh_token",
+        body = {"grant_type": "refresh_token",
                 "refresh_token": refresh_token}
         if self.eorg != self.org:
-            json['scope'] = 'org:%s' % self.eorg
-        return self._do_call(EP_GET_TOKEN, 'post', json=json)
+            body['scope'] = 'org:%s' % self.eorg
+        return self._do_call(EP_GET_TOKEN, 'post', body=body)
 
     def _authenticate(self):
         if not self._is_auth_endpoint_exists():
@@ -76,18 +76,18 @@ class NsofAuth(object):
             return self._authenticate_user()
 
     def _authenticate_api_key(self):
-        json = {"grant_type": "client_credentials",
+        body = {"grant_type": "client_credentials",
                 "client_id": self.username,
                 "client_secret": self.password}
         if self.eorg != self.org:
-            json['scope'] = 'org:%s' % self.eorg
-        return self._do_call(EP_GET_TOKEN, 'post', json=json)
+            body['scope'] = 'org:%s' % self.eorg
+        return self._do_call(EP_GET_TOKEN, 'post', body=body)
 
     def _authenticate_user(self):
-        json = {"username": self.username,
+        body = {"username": self.username,
                 "password": self.password,
                 "org_shortname": self.org}
-        response = self._do_call(EP_LOGIN, 'post', json=json)
+        response = self._do_call(EP_LOGIN, 'post', body=body)
         if response['status'] != 'authorized':
             raise Exception('Could not log in. Returned status: %s',
                             response['status'])
@@ -97,27 +97,27 @@ class NsofAuth(object):
                   'session_token': response['session_token']}
         response = self._do_call(EP_GET_AUTHCODE, 'get', params=params)
 
-        json = {'grant_type': 'authorization_code',
+        body = {'grant_type': 'authorization_code',
                 'client_id': 'api',
                 'code': response['code']}
         if self.eorg != self.org:
-            json['scope'] = 'org:%s' % self.eorg
-        return self._do_call(EP_GET_TOKEN, 'post', json=json)
+            body['scope'] = 'org:%s' % self.eorg
+        return self._do_call(EP_GET_TOKEN, 'post', body=body)
 
     def _is_auth_endpoint_exists(self):
         url = self.host_url + EP_GET_TOKEN
         response = requests.options(url=url)
         return response.status_code == 200
 
-    def _do_call(self, ep, method, params=None, json=None):
+    def _do_call(self, ep, method, params=None, body=None):
         url = self.host_url + ep
         msg = "httpie-nsof: [%s] url=%s" % (self.eorg, url)
         if params:
             msg += ", params=%s" % params
-        if json:
-            msg += ", body=%s" % json
+        if body:
+            msg += ", body=%s" % body
         self._vprint(msg)
-        response = requests.request(method, url, params=params, json=json)
+        response = requests.request(method, url, params=params, json=body)
         response.raise_for_status()
         ret = response.json()
         self._vprint("httpie-nsof: [%s] response=%s" % (self.eorg, ret))
