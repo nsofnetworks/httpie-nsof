@@ -179,7 +179,7 @@ class NsofAuthPlugin(httpie.plugins.AuthPlugin):
                     ('@' not in username and '/key-' not in username):
                 print("httpie-nsof error: invalid username format or invalid "
                       "API key ID format", file=sys.stderr)
-                sys.exit(httpie.ExitStatus.PLUGIN_ERROR)
+                sys.exit(httpie.status.ExitStatus.PLUGIN_ERROR)
             org, username = username.split("/")
         password = password or os.getenv("HTTPIE_NSOF_PASSWORD")
         self._verify_input(org=org, username=username, password=password)
@@ -190,4 +190,4 @@ class NsofAuthPlugin(httpie.plugins.AuthPlugin):
         if missing:
             print("httpie-nsof error: missing %s" % ', '.join(missing),
                   file=sys.stderr)
-            sys.exit(httpie.ExitStatus.PLUGIN_ERROR)
+            sys.exit(httpie.status.ExitStatus.PLUGIN_ERROR)
